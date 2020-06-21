@@ -12,3 +12,20 @@
 #### With the rise of big data and the massive health industry, a large number of medical information resources are being digitized and platformized. Innumerable patients, medical institutions, and medical personnel are being connected, people who are keen on Internet health consultation and information sharing. And Internet search engines have became the backbone of these platforms as well as served as a bridge between doctors and patients. Therefore, scholars have a strong research interest in health search behavior. Some studies have found that about half of patients still cannot accurately comprehend a diagnosis when leaving the doctor's office, making online patient education sites a major source of information for many patients. Through the Google Search Index, we found that reading materials about Hepatitis B and C, cirrhosis, and liver cancer are mainly focused on the risk factors, symptoms, diagnosis, treatment, and prevention [24]. It can be seen that more and more people are relying on the Internet for health counseling and services. They use the Internet not only to look for health-related information, but also to read more professional medical literature or relevant materials, paying the most attention to measures that can improve life quality. The study found that the more serious the patients' condition, the more frequently the Internet search behavior can lead to a positive understanding of their own health. However, in the previous studies, the impact of Internet use on their own health awareness has not yet been taken seriously. For example, when seeking health advice online, quality, personality, fairness, and credibility of the information enhances online trust and make people willing to take action based on online advice [25]. In fact, patients may selectively manage information from the Internet to form a self-serving and positive perception of their own health, which psychologically improves patient's ability to cope with the disease [26].
 
 #### In short, predictive methods based on web search data are still in their infancy, and there are still many areas to be explored. For instance, the reasonable number of search terms and the choice of accurate positioning of the number of delay periods have yet to be explored. On this basis, big data forecast modeling of sudden illnesses such as influenza, Hepatitis A, and Hepatitis C is also a key research topic going forward.
+
+
+
+#### Installation dependencies
+
+*streamlit (https://docs.streamlit.io/en/latest/)
+
+        -pip install streamlit
+        -streamlit run [filename]
+        
+Folder | Description
+---|---
+[data](https://github.com/Nirbhay007/predicting-hepatitis-/tree/master/data) | Dataset for performing *exploratory data analysis* (so as to gain *data understanding*) and for building *classification models* of the hepatitis patients.
+[models](https://github.com/Nirbhay007/predicting-hepatitis-/tree/master/models) |  *classification models* trained on of the hepatitis dataset.
+[Jupyter Notebook](https://github.com/Nirbhay007/predicting-hepatitis-/blob/master/hepatitis%20prediction.ipynb) | Contains detailed EDA ,Modelling,Training and Predicting.
+[Streamlit app](https://github.com/Nirbhay007/predicting-hepatitis-/blob/master/app.py) | Code for streamlit app for predicting hepatitis 
+
