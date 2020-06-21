@@ -159,7 +159,7 @@ labels = ['lt-10',"10-20","20-30","30-40","40-50","50-60","60-70","ge-70"]
 fig1,ax1 = plt.subplots()
 ax1.pie(freq_df['count'],labels=labels,autopct='1%.1f%%')
 ax1.axis('equal')
-st.subheader('Pie chart Distribution')
+st.subheader('Pie chart Distribution for Age')
 st.pyplot(plt.show())
 
 
@@ -212,7 +212,7 @@ target_names = ["Die","Live"]
 class_names = ["Die(1)","Live(2)"]
 
 st.subheader("Predicted Class for the input parameters using all features is:")
-st.write("The model predicted upto 72% accuracy ",target_names[pred[0]-1])
+st.write("The model predicted upto 72% accuracy that the person with the given input symptoms will  ",target_names[pred[0]-1])
 
 
 
