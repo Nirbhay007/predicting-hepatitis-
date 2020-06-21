@@ -7,7 +7,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 import pandas as pd
-
+import numpy as np
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import plot_confusion_matrix
+import matplotlib.pyplot as plt
 # Metrics
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
@@ -16,67 +19,6 @@ from sklearn.model_selection import train_test_split
 st.write("""
 # Predicting Hepatitis
 """)
-
-
-st.sidebar.header('User Input Parameters')
-def user_input_features():
-    age = st.sidebar.slider('age', 10,80,10)
-    s = st.sidebar.radio('sex',("Male","Female"))
-    std = st.sidebar.radio('steroid',("no","yes"))
-    av = st.sidebar.radio('antivirals',("no","yes"))
-    fg=st.sidebar.radio('fatigue',("no","yes"))
-    spi=st.sidebar.radio('spiders', ("no","yes"))
-    asc=st.sidebar.radio('ascites', ("no","yes"))
-    var=st.sidebar.radio('varices', ("no","yes"))
-    bilirubin=st.sidebar.slider('bilirubin', 0.39, 4.00)
-    alk_phosphate=st.sidebar.slider('alk_phosphate', 33, 250)
-    sgot=st.sidebar.slider('sgot',13,500)
-    albumin=st.sidebar.slider('albumin', 2.1,6.0)
-    protime=st.sidebar.slider('protime',10,  90)
-    h=st.sidebar.radio('histology',("no","yes"))
-    if(h=="no"):
-        histology=1
-    else:
-        histology=2
-
-    if(s=="Male"):
-        sex=1
-    else:
-        sex=2
-    if(std=="no"):
-        steroid=1
-    else:
-        steroid=2
-    if(av=="no"):
-        antivirals=1
-    else:
-        antivirals=2
-    if(fg=="no"):
-        fatigue=1
-    else:
-        fatigue=2
-    if(var=="no"):
-        varices=1
-    else:
-        varices=2
-    if(spi=="no"):
-        spiders=1
-    else:
-        spiders=2
-    if(asc=="no"):
-        ascites=1
-    else:
-        ascites=2
-    data = {'age':age, 'sex Select 1 for Males, 2-Females':sex, 'steroid':steroid, 'antivirals':antivirals,'fatigue':fatigue,'spiders':spiders,
-           'ascites':ascites, 'varices':varices, 'bilirubin':bilirubin, 'alk_phosphate':alk_phosphate, 'sgot':sgot, 'albumin':albumin,
-           'protime':protime, 'histology':histology}
-    features = pd.DataFrame(data, index=[0])
-    return features
-
-userdf = user_input_features()
-
-st.subheader('User Input parameters')
-st.write(userdf)
 
 
 col_names = ["Class","AGE","SEX","STEROID","ANTIVIRALS","FATIGUE","MALAISE","ANOREXIA","LIVER BIG","LIVER FIRM","SPLEEN PALPABLE","SPIDERS","ASCITES","VARICES","BILIRUBIN","ALK PHOSPHATE","SGOT","ALBUMIN","PROTIME","HISTOLOGY"]
@@ -133,24 +75,66 @@ logreg.fit(x_train,y_train)
 
 
 logreg.score(x_test,y_test)
-logreg.predict(userdf)
+#logreg.predict(x_test,y_test)
 
+st.subheader('Accuracy score Logistic Regression:')
+st.write(accuracy_score(y_test,logreg.predict(x_test)))
 
 model_logit = LogisticRegression()
 model_logit.fit(x_train_b,y_train_b)
+st.subheader('Accuracy score Logistic Regression with best features:')
+st.write(model_logit.score(x_test_b,y_test_b))
 
-model_logit.score(x_test_b,y_test_b)
-prediction=model_logit.predict(userdf)
+#prediction=model_logit.predict(np.array(userdf.iloc[0]).reshape(1,-1))
+y_pred = model_logit.predict(x_test_b)
+
+st.subheader('Accuracy scores :')
+st.write(accuracy_score(y_test,y_pred))
+
+confusion_matrix(y_test,y_pred)
+#st.write(plot_confusion_matrix(model_logit,x_test_b,y_test_b))
+labels = ["Less than 10","10-20","20-30","30-40","40-50","50-60","60-70","70 and more"]
+bins= [0,10,20,30,40,50,60,70,80]
+freq_df = df.groupby(pd.cut(df['age'],bins=bins,labels=labels)).size()
 
 
+freq_df = freq_df.reset_index(name='count')
+freq_df.plot(kind='bar')
+st.pyplot(plt.show())
+freq_df.plot(kind='line')
+st.pyplot(plt.show())
+df.hist(bins=50,figsize=(20,15))
+st.pyplot(plt.show())
+
+# Plot of Freq Table
+plt.bar(freq_df['age'],freq_df['count'])
+plt.ylabel('Counts')
+plt.title('Frequency Count of Age')
+st.pyplot(plt.show())
+
+labels = ['lt-10',"10-20","20-30","30-40","40-50","50-60","60-70","ge-70"]
+fig1,ax1 = plt.subplots()
+ax1.pie(freq_df['count'],labels=labels,autopct='1%.1f%%')
+ax1.axis('equal')
+st.pyplot(plt.show())
+
+feature_names_best = xfeatures_best.columns
+target_names = ["Die","Live"]
+class_names = ["Die(1)","Live(2)"]
 
 
+#model_logit.predict(np.array(userdf.iloc[1]).reshape(1,-1))
 
 st.subheader('Class labels and their corresponding index number')
-st.write(df['class'])
+st.write(target_names)
 
-st.subheader('Prediction')
-#st.write(userdf.class[prediction])
+
+
+
+
+
+#st.subheader('Prediction')
+#st.write(userdf.target_names[prediction])
 #st.write(prediction)
 
 #st.subheader('Prediction Probability')
