@@ -1,5 +1,8 @@
-# Predicting-Hepatitis-
- This project is made  for hackathon HACKJAIPUR in which we are predicting the mortality rate of hepatitis patients with the help of given dataset.
+# Predicting-Hepatitis
+
+## Motivation
+
+ This project is made  for *hackathon HACKJAIPUR* in which we are predicting the mortality rate of hepatitis patients with the help of given dataset.
 
  Keyword search on the Internet has become one of the main behavioral characteristics of human understanding of Hepatitis B, with a prediction accuracy that can be significantly improved through the use of a comprehensive set of online search indices. The main objective of this study is to establish and apply a prediction model for Hepatitis B incidence, in order to provide a scientific basis for Hepatitis B early detection and timely remediation. Firstly, we utilized principal component analysis to extract salient information. Next, we established a comprehensive prediction model for Hepatitis B trends using the stepwise regression method. Finally, we established a time series model and search data model for comparison, and also predicted the incidence of the next period. The results showed that the model provides stable and timely data, which makes it an ideal tool for prediction, while also providing a frame of reference for the prediction of other infectious diseases.
 
