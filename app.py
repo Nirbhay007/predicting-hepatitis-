@@ -134,7 +134,11 @@ df[['steroid', 'fatigue', 'malaise', 'anorexia', 'liver_big', 'liver_firm',
 df[['bilirubin','albumin']] = df[['bilirubin','albumin']].astype(float)
 
 st.subheader('Bar Chart for Gender Distribution')
-df['sex'].value_counts().plot(kind='bar')
+axes=df['sex'].value_counts().plot(kind='bar')
+a=axes.get_xticks().tolist()
+a[0]="Male"
+a[1]="Female"
+axes.set_xticklabels(a)
 st.pyplot(plt.show())
 
 #st.write(plot_confusion_matrix(model_logit,x_test_b,y_test_b))
@@ -163,6 +167,7 @@ feature_imporance_df = pd.Series(et_clf.feature_importances_,index=xfeatures.col
 st.subheader('Top  12 features')
 plt.figure(figsize=(20,10))
 feature_imporance_df.nlargest(12).plot(kind='barh')
+
 st.pyplot(plt.show())
 
 
