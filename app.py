@@ -20,7 +20,7 @@ from sklearn.model_selection import train_test_split
 st.write("""
 # Predicting Hepatitis
 """)
-st.sidebar.header('User Input Parameters')
+st.sidebar.header('Input Symptoms')
 def user_input_features():
     age = st.sidebar.slider('age', 10,80,10)
     s = st.sidebar.radio('sex',("Male","Female"))
@@ -99,7 +99,7 @@ def user_input_features():
         ascites=1
     else:
         ascites=2
-    data = {'age':age, 'sex Select 1 for Males, 2-Females':sex, 'steroid':steroid, 'antivirals':antivirals,
+    data = {'age':age, 'sex':sex, 'steroid':steroid, 'antivirals':antivirals,
     'fatigue':fatigue,'malaise':malaise,'anorexia':anorexia,'liver_big':liver_big,'liver_firm':liver_firm,
     'spleen_palpable':spleen_palpable,'spiders':spiders,'ascites':ascites, 'varices':varices, 'bilirubin':bilirubin,
      'alk_phosphate':alk_phosphate, 'sgot':sgot, 'albumin':albumin,'protime':protime, 'histology':histology}
@@ -107,9 +107,10 @@ def user_input_features():
     return features
 
 userdf = user_input_features()
-
-st.subheader('User Input parameters')
+st.subheader('Input symptoms')
 st.write(userdf)
+
+st.subheader('Exploratory Data Analysis')
 
 col_names = ["Class","AGE","SEX","STEROID","ANTIVIRALS","FATIGUE","MALAISE","ANOREXIA","LIVER BIG","LIVER FIRM","SPLEEN PALPABLE","SPIDERS","ASCITES","VARICES","BILIRUBIN","ALK PHOSPHATE","SGOT","ALBUMIN","PROTIME","HISTOLOGY"]
 df = pd.read_csv("data/hepatitis.data",names=col_names)
@@ -141,7 +142,7 @@ a[1]="Female"
 axes.set_xticklabels(a)
 st.pyplot(plt.show())
 
-#st.write(plot_confusion_matrix(model_logit,x_test_b,y_test_b))
+
 labels = ["> 10","10-20","20-30","30-40","40-50","50-60","60-70","70 <"]
 bins= [0,10,20,30,40,50,60,70,80]
 freq_df = df.groupby(pd.cut(df['age'],bins=bins,labels=labels)).size()
@@ -167,7 +168,6 @@ feature_imporance_df = pd.Series(et_clf.feature_importances_,index=xfeatures.col
 st.subheader('Top  12 features')
 plt.figure(figsize=(20,10))
 feature_imporance_df.nlargest(12).plot(kind='barh')
-
 st.pyplot(plt.show())
 
 
@@ -235,18 +235,47 @@ target_names = ["Die","Live"]
 class_names = ["Die(1)","Live(2)"]
 
 #Predictions
+
+
+
 pred=logreg.predict(userdf)
-st.subheader("Predicted Class for the input parameters using all features is:")
+st.subheader("Prediction by Logistic Regression using all features is:")
 st.write("The model predicted upto 72% accuracy that the person with the given input symptoms will  ",target_names[pred[0]-1])
 
 
+userdf_best=userdf[['age', 'sex', 'steroid', 'antivirals','fatigue','spiders',
+       'ascites', 'varices', 'bilirubin', 'alk_phosphate', 'sgot', 'albumin',
+       'protime', 'histology']]
+
+pred1=model_logit.predict(userdf_best)
+st.subheader("Prediction by Logistic Regression model with best features:")
+st.write("The model predicted that the person with the given input symptoms will  ",target_names[pred1[0]-1])
+
+
+pred2=knn.predict(userdf_best)
+st.subheader("Prediction by KNN classifier model with best features:")
+st.write("The model predicted that the person with the given input symptoms will  ",target_names[pred2[0]-1])
+
+
+pred3=clf.predict(userdf_best)
+st.subheader("Prediction by Decision Tree model with best features:")
+st.write("The model predicted that the person with the given input symptoms will  ",target_names[pred3[0]-1])
 
 
 
+#confusion matrices
+st.subheader("Confusion matrix for Logistic Regression (with best features):")
+plot_confusion_matrix(model_logit,x_test_b,y_test_b)
+st.pyplot(plt.show())
 
-#st.subheader('Prediction')
-#st.write(userdf.target_names[prediction])
-#st.write(prediction)
+st.subheader("Confusion matrix for Logistic Regression (with all features):")
+plot_confusion_matrix(logreg,x_test,y_test)
+st.pyplot(plt.show())
 
-#st.subheader('Prediction Probability')
-#st.write(prediction_proba)
+st.subheader("Confusion matrix for Decision Tree  (with best features):")
+plot_confusion_matrix(clf,x_test_b,y_test_b)
+st.pyplot(plt.show())
+
+st.subheader("Confusion matrix for KNN (with best features):")
+plot_confusion_matrix(knn,x_test_b,y_test_b)
+st.pyplot(plt.show())
