@@ -1,4 +1,3 @@
-
 import streamlit as st
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection  import chi2
@@ -19,7 +18,96 @@ from sklearn.model_selection import train_test_split
 st.write("""
 # Predicting Hepatitis
 """)
+st.sidebar.header('User Input Parameters')
+def user_input_features():
+    age = st.sidebar.slider('age', 10,80,10)
+    s = st.sidebar.radio('sex',("Male","Female"))
+    std = st.sidebar.radio('steroid',("no","yes"))
+    av = st.sidebar.radio('antivirals',("no","yes"))
+    fg=st.sidebar.radio('fatigue',("no","yes"))
+    spi=st.sidebar.radio('spiders', ("no","yes"))
+    asc=st.sidebar.radio('ascites', ("no","yes"))
+    var=st.sidebar.radio('varices', ("no","yes"))
+    bilirubin=st.sidebar.slider('bilirubin', 0.39, 4.00)
+    alk_phosphate=st.sidebar.slider('alk_phosphate', 33, 250)
+    sgot=st.sidebar.slider('sgot',13,500)
+    albumin=st.sidebar.slider('albumin', 2.1,6.0)
+    protime=st.sidebar.slider('protime',10,  90)
+    h=st.sidebar.radio('histology',("no","yes"))
+    sp=st.sidebar.radio('spleen_palpable',("no","yes"))
+    lf=st.sidebar.radio('liver_firm',("no","yes"))
+    lb=st.sidebar.radio('liver_big',("no","yes"))
+    an=st.sidebar.radio('anorexia',("no","yes"))
+    ml=st.sidebar.radio('malaise',("no","yes"))
+    if(an=="no"):
+        anorexia=1
+    else:
+        anorexia=2
+    if(ml=="no"):
+        malaise=1
+    else:
+        malaise=2
+    if(lf=="no"):
+        liver_firm=1
+    else:
+        liver_firm=2
+    if(lb=="no"):
+        liver_big=1
+    else:
+        liver_big=2
 
+    if(sp=="no"):
+        spleen_palpable=1
+    else:
+        spleen_palpable=2
+    if(sp=="no"):
+        spleen_palpable=1
+    else:
+        spleen_palpable=2
+    if(h=="no"):
+        histology=1
+    else:
+        histology=2
+
+    if(s=="Male"):
+        sex=1
+    else:
+        sex=2
+    if(std=="no"):
+        steroid=1
+    else:
+        steroid=2
+    if(av=="no"):
+        antivirals=1
+    else:
+        antivirals=2
+    if(fg=="no"):
+        fatigue=1
+    else:
+        fatigue=2
+    if(var=="no"):
+        varices=1
+    else:
+        varices=2
+    if(spi=="no"):
+        spiders=1
+    else:
+        spiders=2
+    if(asc=="no"):
+        ascites=1
+    else:
+        ascites=2
+    data = {'age':age, 'sex Select 1 for Males, 2-Females':sex, 'steroid':steroid, 'antivirals':antivirals,
+    'fatigue':fatigue,'malaise':malaise,'anorexia':anorexia,'liver_big':liver_big,'liver_firm':liver_firm,
+    'spleen_palpable':spleen_palpable,'spiders':spiders,'ascites':ascites, 'varices':varices, 'bilirubin':bilirubin,
+     'alk_phosphate':alk_phosphate, 'sgot':sgot, 'albumin':albumin,'protime':protime, 'histology':histology}
+    features = pd.DataFrame(data, index=[0])
+    return features
+
+userdf = user_input_features()
+
+st.subheader('User Input parameters')
+st.write(userdf)
 
 col_names = ["Class","AGE","SEX","STEROID","ANTIVIRALS","FATIGUE","MALAISE","ANOREXIA","LIVER BIG","LIVER FIRM","SPLEEN PALPABLE","SPIDERS","ASCITES","VARICES","BILIRUBIN","ALK PHOSPHATE","SGOT","ALBUMIN","PROTIME","HISTOLOGY"]
 df = pd.read_csv("data/hepatitis.data",names=col_names)
@@ -45,7 +133,6 @@ df[['bilirubin','albumin']] = df[['bilirubin','albumin']].astype(float)
 
 st.subheader('Bar Chart for Gender Distribution')
 df['sex'].value_counts().plot(kind='bar')
-plt.xlabel('Plot number')
 st.pyplot(plt.show())
 
 #st.write(plot_confusion_matrix(model_logit,x_test_b,y_test_b))
@@ -56,13 +143,10 @@ freq_df = df.groupby(pd.cut(df['age'],bins=bins,labels=labels)).size()
 
 freq_df = freq_df.reset_index(name='count')
 freq_df.plot(kind='bar')
-plt.xlabel('Plot number')
 st.pyplot(plt.show())
 freq_df.plot(kind='line')
-plt.xlabel('Plot number')
 st.pyplot(plt.show())
 df.hist(bins=50,figsize=(20,15))
-plt.xlabel('Plot number')
 st.pyplot(plt.show())
 
 # Plot of Freq Table
@@ -79,15 +163,7 @@ st.subheader('Pie chart Distribution')
 st.pyplot(plt.show())
 
 
-
-#model_logit.predict(np.array(userdf.iloc[1]).reshape(1,-1))
-
-#st.subheader('Class labels and their corresponding index number')
-#st.write(target_names)
-
-
-
-
+#training
 
 xfeatures_best = df[['age', 'sex', 'steroid', 'antivirals','fatigue','spiders',
        'ascites', 'varices', 'bilirubin', 'alk_phosphate', 'sgot', 'albumin',
@@ -118,11 +194,6 @@ logreg.fit(x_train,y_train)
 
 logreg.score(x_test,y_test)
 
-#prediction=model_logit.predict(np.array(userdf.iloc[0]).reshape(1,-1))
-
-
-
-
 
 st.subheader('Accuracy score Logistic Regression:')
 st.write(accuracy_score(y_test,logreg.predict(x_test)))
@@ -135,10 +206,16 @@ st.write(model_logit.score(x_test_b,y_test_b))
 
 confusion_matrix(y_test,y_pred)
 
-
+pred=logreg.predict(userdf)
 feature_names_best = xfeatures_best.columns
 target_names = ["Die","Live"]
 class_names = ["Die(1)","Live(2)"]
+
+st.subheader("Predicted Class for the input parameters using all features is:")
+st.write("The model predicted upto 72% accuracy ",target_names[pred[0]-1])
+
+
+
 
 
 #st.subheader('Prediction')
