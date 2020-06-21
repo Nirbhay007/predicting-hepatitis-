@@ -165,31 +165,36 @@ logreg.fit(x_train,y_train)
 
 
 logreg.score(x_test,y_test)
-logreg.predict(np.array(userdf.iloc[0]).reshape(1,-1))
-accuracy_score(y_test,logreg.predict(userdf))
+#logreg.predict(x_test,y_test)
+
+st.subheader('Accuracy score Logistic Regression:')
+st.write(accuracy_score(y_test,logreg.predict(x_test)))
 
 model_logit = LogisticRegression()
 model_logit.fit(x_train_b,y_train_b)
+st.subheader('Accuracy score Logistic Regression with best features:')
+st.write(model_logit.score(x_test_b,y_test_b))
 
-model_logit.score(x_test_b,y_test_b)
-prediction=model_logit.predict(np.array(userdf.iloc[0]).reshape(1,-1))
+#prediction=model_logit.predict(np.array(userdf.iloc[0]).reshape(1,-1))
 
 
 feature_names_best = xfeatures_best.columns
 target_names = ["Die","Live"]
 class_names = ["Die(1)","Live(2)"]
+
+
 #model_logit.predict(np.array(userdf.iloc[1]).reshape(1,-1))
 
-
-
-
-
 st.subheader('Class labels and their corresponding index number')
-st.write(df.target_names)
+st.write(target_names)
 
 
-st.subheader('Prediction')
-st.write(userdf.target_names[prediction])
+
+
+
+
+#st.subheader('Prediction')
+#st.write(userdf.target_names[prediction])
 #st.write(prediction)
 
 #st.subheader('Prediction Probability')
