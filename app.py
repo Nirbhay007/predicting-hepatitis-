@@ -1,4 +1,4 @@
-import yfinance as yf
+
 import streamlit as st
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection  import chi2
@@ -45,6 +45,7 @@ df[['bilirubin','albumin']] = df[['bilirubin','albumin']].astype(float)
 
 st.subheader('Bar Chart for Gender Distribution')
 df['sex'].value_counts().plot(kind='bar')
+plt.xlabel('Plot number')
 st.pyplot(plt.show())
 
 #st.write(plot_confusion_matrix(model_logit,x_test_b,y_test_b))
@@ -55,10 +56,13 @@ freq_df = df.groupby(pd.cut(df['age'],bins=bins,labels=labels)).size()
 
 freq_df = freq_df.reset_index(name='count')
 freq_df.plot(kind='bar')
+plt.xlabel('Plot number')
 st.pyplot(plt.show())
 freq_df.plot(kind='line')
+plt.xlabel('Plot number')
 st.pyplot(plt.show())
 df.hist(bins=50,figsize=(20,15))
+plt.xlabel('Plot number')
 st.pyplot(plt.show())
 
 # Plot of Freq Table
