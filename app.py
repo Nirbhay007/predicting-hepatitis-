@@ -132,6 +132,7 @@ df[['steroid', 'fatigue', 'malaise', 'anorexia', 'liver_big', 'liver_firm',
        'spleen_palpable', 'spiders', 'ascites', 'varices',
        'alk_phosphate', 'sgot', 'protime']].astype(int)
 
+
 df[['bilirubin','albumin']] = df[['bilirubin','albumin']].astype(float)
 st.subheader('Bar Chart for Gender Distribution')
 axes=df['sex'].value_counts().plot(kind='bar')
@@ -145,7 +146,6 @@ st.pyplot(plt.show())
 labels = ["> 10","10-20","20-30","30-40","40-50","50-60","60-70","70 <"]
 bins= [0,10,20,30,40,50,60,70,80]
 freq_df = df.groupby(pd.cut(df['age'],bins=bins,labels=labels)).size()
-
 st.subheader('Histogram for Age Distribution')
 freq_df.plot(x='age',kind='bar')
 st.pyplot(plt.show())
@@ -153,15 +153,9 @@ df.hist(bins=50,figsize=(20,15))
 st.pyplot(plt.show())
 
 
-#st.subheader('Heat Map for features correlation')
-#st.pyplot(sns.heatmap(xfeatures.corr()))
-
-#plt.figure(figsize=(20,10))
 sns.heatmap(df.corr(),annot=True)
 st.subheader('Heatmap with annotations')
 st.pyplot(plt.show())
-
-
 
 
 et_clf = ExtraTreesClassifier()
@@ -171,6 +165,7 @@ st.subheader('Top  12 features')
 plt.figure(figsize=(20,10))
 feature_imporance_df.nlargest(12).plot(kind='barh')
 st.pyplot(plt.show())
+
 
 st.subheader('Scatter Plot for Sex')
 plt.figure(figsize=(20,10))
@@ -192,6 +187,7 @@ feature_scores = pd.DataFrame(best_feature_fit.scores_,columns=['Feature_Scores'
 
 feature_column_names = pd.DataFrame(xfeatures.columns,columns=['Feature_name'])
 best_feat_df = pd.concat([feature_scores,feature_column_names],axis=1)
+
 
 et_clf = ExtraTreesClassifier()
 et_clf.fit(xfeatures,ylabels)
@@ -231,29 +227,24 @@ st.subheader('Accuracy score KNN Classifier with best features:')
 st.write(knn.score(x_test_b,y_test_b))
 
 
-
-
 feature_names_best = xfeatures_best.columns
 target_names = ["Die","Live"]
 class_names = ["Die(1)","Live(2)"]
-
-#Predictions
-
-
-
-pred=logreg.predict(userdf)
-st.subheader("Prediction by Logistic Regression using all features is:")
-st.write("The model predicted upto 72% accuracy that the person with the given input symptoms will  ",target_names[pred[0]-1])
 
 
 userdf_best=userdf[['age', 'sex', 'steroid', 'antivirals','fatigue','spiders',
        'ascites', 'varices', 'bilirubin', 'alk_phosphate', 'sgot', 'albumin',
        'protime', 'histology']]
 
+
+#Predictions
+pred=logreg.predict(userdf)
+st.subheader("Prediction by Logistic Regression using all features is:")
+st.write("The model predicted upto 72% accuracy that the person with the given input symptoms will  ",target_names[pred[0]-1])
+
 pred1=model_logit.predict(userdf_best)
 st.subheader("Prediction by Logistic Regression model with best features:")
 st.write("The model predicted that the person with the given input symptoms will  ",target_names[pred1[0]-1])
-
 
 pred2=knn.predict(userdf_best)
 st.subheader("Prediction by KNN classifier model with best features:")
@@ -263,7 +254,6 @@ st.write("The model predicted that the person with the given input symptoms will
 pred3=clf.predict(userdf_best)
 st.subheader("Prediction by Decision Tree model with best features:")
 st.write("The model predicted that the person with the given input symptoms will  ",target_names[pred3[0]-1])
-
 
 
 #confusion matrices
