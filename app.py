@@ -133,7 +133,6 @@ df[['steroid', 'fatigue', 'malaise', 'anorexia', 'liver_big', 'liver_firm',
        'alk_phosphate', 'sgot', 'protime']].astype(int)
 
 df[['bilirubin','albumin']] = df[['bilirubin','albumin']].astype(float)
-
 st.subheader('Bar Chart for Gender Distribution')
 axes=df['sex'].value_counts().plot(kind='bar')
 a=axes.get_xticks().tolist()
@@ -162,6 +161,9 @@ sns.heatmap(df.corr(),annot=True)
 st.subheader('Heatmap with annotations')
 st.pyplot(plt.show())
 
+
+
+
 et_clf = ExtraTreesClassifier()
 et_clf.fit(xfeatures,ylabels)
 feature_imporance_df = pd.Series(et_clf.feature_importances_,index=xfeatures.columns)
@@ -170,9 +172,10 @@ plt.figure(figsize=(20,10))
 feature_imporance_df.nlargest(12).plot(kind='barh')
 st.pyplot(plt.show())
 
-
-
-
+st.subheader('Scatter Plot for Sex')
+plt.figure(figsize=(20,10))
+sns.scatterplot(x=df['albumin'],y=df['age'],hue=df['sex'], palette=['green','red'],data=df)
+st.pyplot(plt.show())
 
 
 #training
