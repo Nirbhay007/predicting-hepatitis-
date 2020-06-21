@@ -43,55 +43,10 @@ df[['steroid', 'fatigue', 'malaise', 'anorexia', 'liver_big', 'liver_firm',
 
 df[['bilirubin','albumin']] = df[['bilirubin','albumin']].astype(float)
 
-skb = SelectKBest(score_func=chi2,k=10)
-best_feature_fit = skb.fit(xfeatures,ylabels)
-bf_02 = best_feature_fit.transform(xfeatures)
-feature_scores = pd.DataFrame(best_feature_fit.scores_,columns=['Feature_Scores'])
+st.subheader('Bar Chart for Gender Distribution')
+df['sex'].value_counts().plot(kind='bar')
+st.pyplot(plt.show())
 
-feature_column_names = pd.DataFrame(xfeatures.columns,columns=['Feature_name'])
-best_feat_df = pd.concat([feature_scores,feature_column_names],axis=1)
-
-et_clf = ExtraTreesClassifier()
-et_clf.fit(xfeatures,ylabels)
-feature_imporance_df = pd.Series(et_clf.feature_importances_,index=xfeatures.columns)
-
-
-
-
-xfeatures_best = df[['age', 'sex', 'steroid', 'antivirals','fatigue','spiders',
-       'ascites', 'varices', 'bilirubin', 'alk_phosphate', 'sgot', 'albumin',
-       'protime', 'histology']]
-ylabels = df['class']
-
-
-# train /test dataset
-x_train,x_test,y_train,y_test = train_test_split(xfeatures,ylabels,test_size=0.30,random_state=7)
-
-# train /test dataset for best features
-x_train_b,x_test_b,y_train_b,y_test_b = train_test_split(xfeatures_best,ylabels,test_size=0.30,random_state=7)
-
-logreg = LogisticRegression()
-logreg.fit(x_train,y_train)
-
-
-logreg.score(x_test,y_test)
-#logreg.predict(x_test,y_test)
-
-st.subheader('Accuracy score Logistic Regression:')
-st.write(accuracy_score(y_test,logreg.predict(x_test)))
-
-model_logit = LogisticRegression()
-model_logit.fit(x_train_b,y_train_b)
-st.subheader('Accuracy score Logistic Regression with best features:')
-st.write(model_logit.score(x_test_b,y_test_b))
-
-#prediction=model_logit.predict(np.array(userdf.iloc[0]).reshape(1,-1))
-y_pred = model_logit.predict(x_test_b)
-
-st.subheader('Accuracy scores :')
-st.write(accuracy_score(y_test,y_pred))
-
-confusion_matrix(y_test,y_pred)
 #st.write(plot_confusion_matrix(model_logit,x_test_b,y_test_b))
 labels = ["Less than 10","10-20","20-30","30-40","40-50","50-60","60-70","70 and more"]
 bins= [0,10,20,30,40,50,60,70,80]
@@ -109,28 +64,77 @@ st.pyplot(plt.show())
 # Plot of Freq Table
 plt.bar(freq_df['age'],freq_df['count'])
 plt.ylabel('Counts')
-plt.title('Frequency Count of Age')
+st.subheader('Frequency Count of Age')
 st.pyplot(plt.show())
 
 labels = ['lt-10',"10-20","20-30","30-40","40-50","50-60","60-70","ge-70"]
 fig1,ax1 = plt.subplots()
 ax1.pie(freq_df['count'],labels=labels,autopct='1%.1f%%')
 ax1.axis('equal')
+st.subheader('Pie chart Distribution')
 st.pyplot(plt.show())
 
-feature_names_best = xfeatures_best.columns
-target_names = ["Die","Live"]
-class_names = ["Die(1)","Live(2)"]
 
 
 #model_logit.predict(np.array(userdf.iloc[1]).reshape(1,-1))
 
-st.subheader('Class labels and their corresponding index number')
-st.write(target_names)
+#st.subheader('Class labels and their corresponding index number')
+#st.write(target_names)
 
 
 
 
+
+xfeatures_best = df[['age', 'sex', 'steroid', 'antivirals','fatigue','spiders',
+       'ascites', 'varices', 'bilirubin', 'alk_phosphate', 'sgot', 'albumin',
+       'protime', 'histology']]
+ylabels = df['class']
+
+skb = SelectKBest(score_func=chi2,k=10)
+best_feature_fit = skb.fit(xfeatures,ylabels)
+bf_02 = best_feature_fit.transform(xfeatures)
+feature_scores = pd.DataFrame(best_feature_fit.scores_,columns=['Feature_Scores'])
+
+feature_column_names = pd.DataFrame(xfeatures.columns,columns=['Feature_name'])
+best_feat_df = pd.concat([feature_scores,feature_column_names],axis=1)
+
+et_clf = ExtraTreesClassifier()
+et_clf.fit(xfeatures,ylabels)
+feature_imporance_df = pd.Series(et_clf.feature_importances_,index=xfeatures.columns)
+
+# train /test dataset
+x_train,x_test,y_train,y_test = train_test_split(xfeatures,ylabels,test_size=0.30,random_state=7)
+
+# train /test dataset for best features
+x_train_b,x_test_b,y_train_b,y_test_b = train_test_split(xfeatures_best,ylabels,test_size=0.30,random_state=7)
+
+logreg = LogisticRegression()
+logreg.fit(x_train,y_train)
+
+
+logreg.score(x_test,y_test)
+
+#prediction=model_logit.predict(np.array(userdf.iloc[0]).reshape(1,-1))
+
+
+
+
+
+st.subheader('Accuracy score Logistic Regression:')
+st.write(accuracy_score(y_test,logreg.predict(x_test)))
+
+model_logit = LogisticRegression()
+model_logit.fit(x_train_b,y_train_b)
+y_pred = model_logit.predict(x_test_b)
+st.subheader('Accuracy score Logistic Regression with best features:')
+st.write(model_logit.score(x_test_b,y_test_b))
+
+confusion_matrix(y_test,y_pred)
+
+
+feature_names_best = xfeatures_best.columns
+target_names = ["Die","Live"]
+class_names = ["Die(1)","Live(2)"]
 
 
 #st.subheader('Prediction')
