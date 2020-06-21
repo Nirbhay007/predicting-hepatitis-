@@ -6,7 +6,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 import pandas as pd
-import numpy as np
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.neighbors import KNeighborsClassifier
+import seaborn as sns
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import plot_confusion_matrix
 import matplotlib.pyplot as plt
@@ -136,31 +138,36 @@ df['sex'].value_counts().plot(kind='bar')
 st.pyplot(plt.show())
 
 #st.write(plot_confusion_matrix(model_logit,x_test_b,y_test_b))
-labels = ["Less than 10","10-20","20-30","30-40","40-50","50-60","60-70","70 and more"]
+labels = ["> 10","10-20","20-30","30-40","40-50","50-60","60-70","70 <"]
 bins= [0,10,20,30,40,50,60,70,80]
 freq_df = df.groupby(pd.cut(df['age'],bins=bins,labels=labels)).size()
 
-
-freq_df = freq_df.reset_index(name='count')
-freq_df.plot(kind='bar')
-st.pyplot(plt.show())
-freq_df.plot(kind='line')
+st.subheader('Histogram for Age Distribution')
+freq_df.plot(x='age',kind='bar')
 st.pyplot(plt.show())
 df.hist(bins=50,figsize=(20,15))
 st.pyplot(plt.show())
 
-# Plot of Freq Table
-plt.bar(freq_df['age'],freq_df['count'])
-plt.ylabel('Counts')
-st.subheader('Frequency Count of Age')
+
+#st.subheader('Heat Map for features correlation')
+#st.pyplot(sns.heatmap(xfeatures.corr()))
+
+#plt.figure(figsize=(20,10))
+sns.heatmap(df.corr(),annot=True)
+st.subheader('Heatmap with annotations')
 st.pyplot(plt.show())
 
-labels = ['lt-10',"10-20","20-30","30-40","40-50","50-60","60-70","ge-70"]
-fig1,ax1 = plt.subplots()
-ax1.pie(freq_df['count'],labels=labels,autopct='1%.1f%%')
-ax1.axis('equal')
-st.subheader('Pie chart Distribution for Age')
+et_clf = ExtraTreesClassifier()
+et_clf.fit(xfeatures,ylabels)
+feature_imporance_df = pd.Series(et_clf.feature_importances_,index=xfeatures.columns)
+st.subheader('Top  12 features')
+plt.figure(figsize=(20,10))
+feature_imporance_df.nlargest(12).plot(kind='barh')
 st.pyplot(plt.show())
+
+
+
+
 
 
 #training
@@ -188,31 +195,45 @@ x_train,x_test,y_train,y_test = train_test_split(xfeatures,ylabels,test_size=0.3
 # train /test dataset for best features
 x_train_b,x_test_b,y_train_b,y_test_b = train_test_split(xfeatures_best,ylabels,test_size=0.30,random_state=7)
 
+
+#model 1
 logreg = LogisticRegression()
 logreg.fit(x_train,y_train)
-
-
 logreg.score(x_test,y_test)
-
-
 st.subheader('Accuracy score Logistic Regression:')
 st.write(accuracy_score(y_test,logreg.predict(x_test)))
 
+#model 2
 model_logit = LogisticRegression()
 model_logit.fit(x_train_b,y_train_b)
 y_pred = model_logit.predict(x_test_b)
 st.subheader('Accuracy score Logistic Regression with best features:')
 st.write(model_logit.score(x_test_b,y_test_b))
 
-confusion_matrix(y_test,y_pred)
+#model 3
+clf = DecisionTreeClassifier()
+clf.fit(x_train_b,y_train_b)
+st.subheader('Accuracy score Decision Tree Classifier with best features:')
+st.write(clf.score(x_test_b,y_test_b))
 
-pred=logreg.predict(userdf)
+#model 4
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(x_train_b,y_train_b)
+st.subheader('Accuracy score KNN Classifier with best features:')
+st.write(knn.score(x_test_b,y_test_b))
+
+
+
+
 feature_names_best = xfeatures_best.columns
 target_names = ["Die","Live"]
 class_names = ["Die(1)","Live(2)"]
 
+#Predictions
+pred=logreg.predict(userdf)
 st.subheader("Predicted Class for the input parameters using all features is:")
 st.write("The model predicted upto 72% accuracy that the person with the given input symptoms will  ",target_names[pred[0]-1])
+
 
 
 
